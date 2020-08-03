@@ -15,8 +15,8 @@ const roleList = [];
 const departList = [];
 const employeeList = [];
 // const employeeObj = {};
-let tempRoleId = 0;
-let tempManagerID = 0;
+// let tempRoleId = 0;
+// let tempManagerID = 0;
 
 
 // read file and pass actual header data to the new variable 
@@ -25,14 +25,6 @@ fs.readFile("assets/headerArt.txt", "utf-8", (err, data) => {
   header = data;
 });
 
-function clearAndEmployeeTable() {
-  console.clear();
-  connection.query(viewEmployees(), (err, res) => {
-    if (err) throw err
-    console.table(res)
-    console.log("\n")
-  })
-}
 // MySQL DB Connection Information (remember to change this with our specific credentials)
 // require  dotenv.config to use the .env file containing all the secrets
 // use process.env. for accessing the variable key
@@ -50,7 +42,10 @@ function updateRoleList() {
   roleList.length = 0;
   connection.query(viewRoles(), (err, data) => {
     for(let i = 0; i < data.length; i++) {
-      roleList.push(data[i].title)
+      roleList.push({
+        value: data[i].id,
+        name: data[i].title
+      })
     };
   })
 }
@@ -59,7 +54,10 @@ function updateDepartmentList() {
   departList.length = 0;
   connection.query(viewDepartments(), (err, data) => {
     for(let i = 0; i < data.length; i++) {
-      departList.push(data[i].name)
+      departList.push({
+        value: data[0].id,
+        name: data[i].name
+      })
     };
   });
 }
@@ -69,7 +67,10 @@ function updateEmployeeList() {
   employeeList.push("Null");
   connection.query(viewEmployees(), (err, data) => {
     for(let i = 0; i < data.length; i++) {
-      employeeList.push(data[i].Employee)
+      employeeList.push({
+        value: data[i].id,
+        name: data[i].Employee
+      })
     };
   });
 }
@@ -91,6 +92,7 @@ async function logic() {
         "Add Role",
         new inquirer.Separator(),
         "Update Role Of Employee",
+        "Update An Employees Manager",
         new inquirer.Separator(),
         "Exit",
         new inquirer.Separator(),
@@ -147,27 +149,16 @@ async function logic() {
           "list",
           employeeList
         )
-          await connection.query(getRoleID(selectRole.eTitle), (err, data) => {
-            tempRoleId = data[0].id
-          })
-         
-
-         if (manager.mName === "Null") {
-           tempManagerID = "Null"
-         } else {
-          await connection.query(getManagerID(manager.mName), (err, data) => {
-            tempManagerID = data[0].id
-            // console.log(tempManagerID)
-          })
-         }  
+          // await connection.query(getRoleID(selectRole.eTitle), (err, data) => {
+          //   tempRoleId = data[0].id
+          // })\
          
         //  
-        await connection.query(addEmployee(firstName.firstName, lastName.lastName, tempRoleId, tempManagerID), (err, res) => {
+        await connection.query(addEmployee(firstName.firstName, lastName.lastName, selectRole.eTitle, manager.mName), (err, res) => {
           // if (err) throw err;
-          if (err) console.log(err)
-          console.log(res);
-          // console.log("Successfully added a new employee");
+          console.log("Successfully added a new employee");
         })
+        updateEmployeeList();
         logic();
           break;
 
@@ -178,20 +169,90 @@ async function logic() {
           "prompt",
           []
         );
-          await connection.query(addDepartment(newDepartment.dName), (err, res) => {
+          await connection.query(addDepartment(newDepartment.dName), (err) => {
             // if (err) throw err;
             console.log("successfully added a new department")
-          }) 
+          })
+          updateDepartmentList();
           logic();
         break;
         
       case "Add Role":
-        
+        let newTitle = await promptUser( 
+          "title",
+          "Enter new Profession / Title",
+          "prompt",
+          []
+        );
+
+        let newSalary = await promptUser(
+          "salary",
+          "Enter the salary for the new position",
+          "prompt",
+          []
+        )
+
+        let departmentID = await promptUser(
+          "depID",
+          "Please Choose the department",
+          "list",
+          departList
+        )
+
+        await connection.query(addRole(
+          newTitle.title, 
+          newSalary.salary, 
+          departmentID.depID
+        ), (err) => {
+
+        })
+        updateRoleList();
+        logic();
           break;
 
       case "Update Role Of Employee":
-        clearAndHeader();
-    
+         let employeeUpdate = await promptUser(
+           "employeeID",
+           "Which employee would you like update",
+           "list",
+           employeeList
+         );
+
+         let roleUpdate = await promptUser(
+          "roleID",
+          "Please select employee's new role",
+          "list",
+          roleList
+         );
+         connection.query(updateRole(
+           employeeUpdate.employeeID,
+           roleUpdate.roleID), (err) => {
+           })
+           updateRoleList();
+        logic();
+        break;
+
+      case "Update An Employees Manager":
+        let employUpdate = await promptUser(
+          "employeeID",
+          "Which employee would you like update",
+          "list",
+          employeeList
+        );
+
+        let managerUpdate = await promptUser(
+          "managerID",
+          "Please select employee's new manager",
+          "list",
+          employeeList
+        );
+
+        connection.query(updateManager(
+          employUpdate.employeeID,
+          managerUpdate.managerID), (err) => {
+        })
+
+        logic();
         break;
         
       case "Exit":
@@ -244,17 +305,17 @@ function viewEmployees() {
 } 
 
 function viewDepartments() {
-  return  `SELECT name FROM department;`
+  return  `SELECT id, name FROM department;`
 };
 
 
 function viewRoles() {
-  return `SELECT title, salary, department_id FROM role ORDER BY title;`
+  return `SELECT id, title, salary, department_id FROM role ORDER BY title;`
 }
 
-function addEmployee(first, last, roleid, managerid) {
+function addEmployee(first, last, roleID, managerID) {
   return `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("${first}", "${last}", ${roleid}, ${managerid});`;
+VALUES ("${first}", "${last}", ${roleID}, ${managerID});`;
 };
 
 function addRole(title, salary, department_id) {
@@ -266,16 +327,11 @@ function addDepartment(name) {
   return `INSERT INTO department (name) VALUES("${name}");`;
 };
 
-function getRoleID(title) {
-  return `SELECT id from role where title = "${title}";`;
+function updateRole(employeeID, roleID) {
+  return `UPDATE employee SET role_id= ${roleID} WHERE id = ${employeeID};`;
 }
 
-function getManagerID(managerName) {
- return `SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS 'Employee', d.name AS 'Department', r.title AS 'Title', r.salary AS 'Salary', CONCAT(m.first_name, ' ', m.last_name) AS 'Manager'
-  FROM employee e
-      LEFT JOIN employee m ON m.id = e.manager_id
-      LEFT JOIN role r ON e.role_id = r.id
-      LEFT JOIN department d ON d.id = r.department_id
-      WHERE CONCAT(m.first_name, ' ', m.last_name) = "${managerName}"
-  ORDER BY e.id;`
+function updateManager(employeeID, managerID) {
+  // reversed the employee id and manager id, so that you update the mangers, manager_id col
+  return `UPDATE employee SET manager_id = ${employeeID} where id = ${managerID}`
 }
