@@ -218,9 +218,19 @@ async function logic() {
           "list",
           roleList
          );
+
+        let updateDepID = await promptUser(
+          "updateDepID",
+          "Please Choose The New Department",
+          "list",
+          departList
+        )
+
          connection.query(updateRole(
            employeeUpdate.employeeID,
-           roleUpdate.roleID), (err) => {
+           roleUpdate.roleID,
+           updateDepID.updateDepID
+        ), (err) => {
            })
            updateRoleList();
         logic();
@@ -324,7 +334,7 @@ function updateRole(employeeID, roleID) {
   return `UPDATE employee SET role_id= ${roleID} WHERE id = ${employeeID};`;
 }
 
-function updateManager(employeeID, managerID) {
+function updateManager(employeeID, managerID, departmentID) {
   // reversed the employee id and manager id, so that you update the mangers, manager_id col
-  return `UPDATE employee SET manager_id = ${managerID} where id = ${employeeID}`
+  return `UPDATE employee SET manager_id = ${managerID}, department_id = ${departmentID}  where id = ${employeeID}`
 }
