@@ -3,7 +3,13 @@ const express = require("express");
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
-const header = require(`./assets/headerArt.js`)
+const fs = require("fs");
+
+let header = "";
+fs.readFile("assets/headerArt.txt", "utf-8", (err, data) => {
+  if (err) throw err;
+  header = data;
+});
 
 // MySQL DB Connection Information (remember to change this with our specific credentials)
 require('dotenv').config();
@@ -45,6 +51,7 @@ async function logic() {
     switch (userSelection.userChoice) {
       case "View Employees":
         console.clear();
+        console.log(header)
         connection.query(viewEmployees(), (err,res) => {
           console.table(res);
           logic();
@@ -134,8 +141,4 @@ function viewDepartments() {
 
 function viewRoles() {
   return `SELECT title, salary, department_id FROM role ORDER BY title;`
-}
-
-function header() {
-
 }
