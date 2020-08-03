@@ -4,8 +4,8 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 const fs = require("fs");
-const e = require("express");
-const { start } = require("repl");
+
+
 
 // create variable to hold header
 let header = "";
