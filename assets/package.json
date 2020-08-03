@@ -23,8 +23,5 @@
     "express": "^4.17.1",
     "inquirer": "^7.3.3",
     "mysql": "^2.18.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.4"
   }
 }
