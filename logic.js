@@ -14,9 +14,7 @@ let header = "";
 const roleList = [];
 const departList = [];
 const employeeList = [];
-// const employeeObj = {};
-// let tempRoleId = 0;
-// let tempManagerID = 0;
+
 
 
 // read file and pass actual header data to the new variable 
@@ -149,13 +147,10 @@ async function logic() {
           "list",
           employeeList
         )
-          // await connection.query(getRoleID(selectRole.eTitle), (err, data) => {
-          //   tempRoleId = data[0].id
-          // })\
+        
          
         //  
         await connection.query(addEmployee(firstName.firstName, lastName.lastName, selectRole.eTitle, manager.mName), (err, res) => {
-          // if (err) throw err;
           console.log("Successfully added a new employee");
         })
         updateEmployeeList();
@@ -170,7 +165,6 @@ async function logic() {
           []
         );
           await connection.query(addDepartment(newDepartment.dName), (err) => {
-            // if (err) throw err;
             console.log("successfully added a new department")
           })
           updateDepartmentList();
@@ -265,7 +259,6 @@ async function logic() {
     }
 }
 
-
 function promptUser(promptName, promptMessage, promptType, promptChoices) {
   return inquirer
   .prompt([
@@ -333,5 +326,5 @@ function updateRole(employeeID, roleID) {
 
 function updateManager(employeeID, managerID) {
   // reversed the employee id and manager id, so that you update the mangers, manager_id col
-  return `UPDATE employee SET manager_id = ${employeeID} where id = ${managerID}`
+  return `UPDATE employee SET manager_id = ${managerID} where id = ${employeeID}`
 }
