@@ -44,4 +44,4 @@ Email: ben_j_stephens@hotmail.com
 
 ## Screenshot 
 
-![alt name](file location)
+![screenshot](/assets/img/tracker.png)
