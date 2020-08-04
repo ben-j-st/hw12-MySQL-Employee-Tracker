@@ -1,15 +1,47 @@
-# hw12-MySQL-Employee-Tracker
-a content management system to help track employees
+# Employee Tracker  
+
+    
+<div align="right"><img alt="licence badge" src="https://img.shields.io/badge/licence-MIT-yellow"></div>
+
+## Description 
+
+a node application that utilises inquirer prompts to interact with a database to be able to view, and alter the information in the table
+
+## Table of Contents
+
+* [Description](#Description)
+* [Installation](#Installation)
+* [Usage](#Usage)
+* [Licence](#Licence)
+* [Questions](#Questions)
+
+## Installation
+
+- dotenv 8.2.0 need a copy of the .env file 
+- express 4.17.1
+- inquirer 7.3.3
+- mysql 2.18.1
+
+clone a copy of the repo run npm i to install the following dependencies, them the application, can be run with npm start
+
+## Usage
+
+it accesses a database containing three seperate tables, using prompts to interact with these in various ways to view the information in the consol or alter the information in the table  
+
+## Licence 
+
+MIT
+
+A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code. see full licence at https://choosealicense.com/licenses/mit/
 
 
-// select all
-SELECT *
+## Questions
 
-// from which table and what you want the alias of the table to be
-FROM new_table u1
+Github Username: <a href="https://github.com/ben-j-st">ben-j-st</a>
 
-// join the same table as the second reference 
-INNER JOIN new_table u2
+Email: ben_j_stephens@hotmail.com
 
-// the selected criteria for the join
-on u1.manager_id = u2.id;
+
+## Screenshot 
+
+![alt name](file location)
