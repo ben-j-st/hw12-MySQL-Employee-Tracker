@@ -338,3 +338,5 @@ function updateManager(employeeID, managerID, departmentID) {
   // reversed the employee id and manager id, so that you update the mangers, manager_id col
   return `UPDATE employee SET manager_id = ${managerID}, department_id = ${departmentID}  where id = ${employeeID}`
 }
+
+
