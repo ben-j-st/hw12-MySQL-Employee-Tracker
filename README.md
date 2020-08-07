@@ -44,4 +44,4 @@ Email: ben_j_stephens@hotmail.com
 
 ## Screenshot 
 
-![screenshot](assets/img/tracker.png)
+![screenshot](/assets/img/tracker.PNG)
