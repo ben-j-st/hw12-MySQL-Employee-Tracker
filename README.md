@@ -7,6 +7,8 @@
 
 a node application that utilises inquirer prompts to interact with a database to be able to view, and alter the information in the table
 
+ <a href="https://drive.google.com/file/d/1uhSwvqkYlXgwGC10Bsgag1mvKNJmHpoP/view">Video Link Of Application In Use</a>
+
 ## Table of Contents
 
 * [Description](#Description)
